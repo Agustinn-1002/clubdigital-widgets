@@ -1,68 +1,85 @@
-.shipping-widget-container {
+.shipping-widget-wrapper {
   width: 100%;
-  padding: 15px 0;
-  margin-top: 15px;
-  border-top: 1px solid #eaeaea; /* Línea separadora sutil arriba */
-  border-bottom: 1px solid #eaeaea; /* Línea separadora sutil abajo */
+  margin-bottom: 30px; /* Le da aire antes del texto de la descripción */
   font-family: 'Inter', sans-serif;
 }
 
-.shipping-steps {
+.shipping-pill {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start;
-  position: relative;
-  max-width: 400px; /* Para que no se estire de más en monitores gigantes */
-  margin: 0 auto;
-}
-
-/* La rayita conectora más finita y gris */
-.shipping-connector {
-  position: absolute;
-  top: 12px;
-  left: 15%;
-  right: 15%;
-  height: 1px;
-  background-color: #d1d5db;
-  z-index: 1;
+  align-items: center;
+  background-color: #f8fafc; /* Fondo gris ultra sutil */
+  border: 1px solid #e2e8f0;
+  border-radius: 50px; /* Forma redondeada elegante */
+  padding: 15px 30px;
 }
 
 .shipping-step {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Ícono a la izquierda, texto a la derecha */
   align-items: center;
-  background-color: #ffffff; /* Fonde blanco para tapar la rayita */
-  padding: 0 10px;
-  z-index: 2;
+  gap: 12px;
 }
 
 .shipping-icon {
-  width: 20px;
-  height: 20px;
-  margin-bottom: 6px;
-  color: #4b5563; /* Gris oscuro elegante, ya no verde fuerte */
+  width: 24px;
+  height: 24px;
+  color: #10B981; /* Tu verde sutil */
+}
+
+.shipping-text-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .shipping-title {
-  font-size: 10px;
-  color: #6b7280;
+  font-size: 11px;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 2px;
+  font-weight: 600;
 }
 
 .shipping-date {
-  font-size: 12px;
-  color: #111827;
-  font-weight: 600;
+  font-size: 13px;
+  color: #0f172a;
+  font-weight: 700;
 }
 
 .shipping-badge {
   background-color: #ef4444;
   color: white;
   font-size: 9px;
-  font-weight: 700;
-  padding: 2px 5px;
-  border-radius: 3px;
-  margin-top: 4px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+}
+
+/* La rayita conectora horizontal */
+.shipping-connector {
+  flex: 1;
+  height: 0px;
+  border-top: 2px dashed #cbd5e1;
+  margin: 0 20px;
+}
+
+/* Ajuste para celulares */
+@media (max-width: 768px) {
+  .shipping-pill {
+    padding: 15px;
+    border-radius: 15px;
+    flex-direction: column; /* En celular se apilan para no romperse */
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .shipping-connector {
+    display: none; /* Ocultamos la línea punteada en celular */
+  }
+  .shipping-badge {
+    margin-left: 0;
+    margin-top: 4px;
+  }
 }
