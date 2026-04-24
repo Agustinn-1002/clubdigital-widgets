@@ -69,15 +69,30 @@
 /* Ajuste para celulares */
 @media (max-width: 768px) {
   .shipping-pill {
-    padding: 15px;
+    padding: 20px;
     border-radius: 15px;
-    flex-direction: column; /* En celular se apilan para no romperse */
+    flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: 0; /* Sacamos el gap automático porque el espacio ahora lo da la línea */
   }
+  
+  .shipping-step {
+    width: 100%;
+  }
+  
   .shipping-connector {
-    display: none; /* Ocultamos la línea punteada en celular */
+    display: block; /* Volvemos a mostrar la línea que antes ocultábamos */
+    flex: none; /* Anulamos el formato estirable de PC */
+    width: 0;
+    height: 25px; /* El largo de la rayita vertical */
+    border-top: none; /* Borramos la línea horizontal */
+    border-left: 2px dashed #cbd5e1; /* Creamos la línea vertical */
+    
+    /* Matemática pura: el ícono mide 24px (centro en 12px). 
+       La línea mide 2px. Un margen de 11px la centra perfecto (11 + 1 = 12) */
+    margin: 5px 0 5px 11px; 
   }
+
   .shipping-badge {
     margin-left: 0;
     margin-top: 4px;
