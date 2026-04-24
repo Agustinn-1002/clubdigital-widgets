@@ -1,0 +1,30 @@
+.wb-container {
+  background-color: #f8f9fa; /* Fondo gris claro como en tu captura */
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 15px 0; /* Espaciado con el precio y los botones */
+  font-family: inherit; /* Hereda la fuente de tu Tiendanube */
+}
+
+.wb-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wb-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #374151;
+  font-size: 14px;
+}
+
+.wb-icon {
+  width: 20px;
+  height: 20px;
+}
