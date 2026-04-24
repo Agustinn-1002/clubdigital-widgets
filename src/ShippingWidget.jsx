@@ -1,49 +1,76 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ShippingWidget.css';
 
 const ShippingWidget = () => {
+  const [entregaTexto, setEntregaTexto] = useState('Calculando...');
+
   const getShippingDates = () => {
     const now = new Date();
-    const dayOfWeek = now.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+    const dayOfWeek = now.getDay(); 
     const hour = now.getHours();
     
     let isToday = false;
     let dispatchDate = new Date();
     
-    // Lógica del horario de corte (14:00 hs)
     if (dayOfWeek >= 1 && dayOfWeek <= 5 && hour < 14) {
-      isToday = true; // Lunes a Viernes antes de las 14:00 -> Despacha hoy
+      isToday = true; 
     } else if (dayOfWeek >= 1 && dayOfWeek <= 4 && hour >= 14) {
-      dispatchDate.setDate(now.getDate() + 1); // Lunes a Jueves post 14:00 -> Mañana
+      dispatchDate.setDate(now.getDate() + 1); 
     } else if (dayOfWeek === 5 && hour >= 14) {
-      dispatchDate.setDate(now.getDate() + 3); // Viernes post 14:00 -> Lunes
+      dispatchDate.setDate(now.getDate() + 3); 
     } else if (dayOfWeek === 6) {
-      dispatchDate.setDate(now.getDate() + 2); // Sábado -> Lunes
+      dispatchDate.setDate(now.getDate() + 2); 
     } else if (dayOfWeek === 0) {
-      dispatchDate.setDate(now.getDate() + 1); // Domingo -> Lunes
+      dispatchDate.setDate(now.getDate() + 1); 
     }
 
-    // Calculamos una entrega estimada sumando 2 a 3 días hábiles desde el despacho
-    let deliveryStart = new Date(dispatchDate);
-    deliveryStart.setDate(dispatchDate.getDate() + 2);
-    if (deliveryStart.getDay() === 6) deliveryStart.setDate(deliveryStart.getDate() + 2);
-    if (deliveryStart.getDay() === 0) deliveryStart.setDate(deliveryStart.getDate() + 1);
-
-    let deliveryEnd = new Date(deliveryStart);
-    deliveryEnd.setDate(deliveryStart.getDate() + 1);
-    if (deliveryEnd.getDay() === 6) deliveryEnd.setDate(deliveryEnd.getDate() + 2);
+    // Cálculo matemático de emergencia (por si el cliente no pone el Código Postal)
+    let deliveryFallback = new Date(dispatchDate);
+    deliveryFallback.setDate(dispatchDate.getDate() + 3);
 
     const formatOptions = { day: 'numeric', month: 'short' };
     
     return {
       compraText: "Hoy",
-      badgeText: isToday ? "ANTES DE LAS 14:00" : null,
+      badgeText: isToday ? "ANTES 14HS" : null,
       envioText: isToday ? "Hoy" : dispatchDate.toLocaleDateString('es-AR', formatOptions),
-      entregaText: `${deliveryStart.toLocaleDateString('es-AR', formatOptions)} - ${deliveryEnd.toLocaleDateString('es-AR', formatOptions)}`
+      entregaTextFallback: `Aprox. ${deliveryFallback.toLocaleDateString('es-AR', formatOptions)}`
     };
   };
 
   const dates = getShippingDates();
+
+  useEffect(() => {
+    // Ponemos la fecha matemática por defecto hasta que el cliente ponga su código postal
+    setEntregaTexto(dates.entregaTextFallback);
+
+    // Esta es la función "chismosa" que lee la pantalla
+    const buscarFechaAndreani = () => {
+      // Buscamos cualquier texto chiquito en la página
+      const elementosDeTexto = document.querySelectorAll('span, p, small, div');
+      
+      for (let el of elementosDeTexto) {
+        const texto = el.innerText || '';
+        // Si Tiendanube acaba de escribir "Llega el..." o "Llega entre..."
+        if (texto.includes('Llega el ') || texto.includes('Llega entre ')) {
+          // Limpiamos el texto para que quede solo la fecha prolija
+          let fechaLimpia = texto.replace('Llega el ', '').replace('Llega entre ', '').trim();
+          
+          // Si el texto tiene un salto de línea por culpa de Tiendanube, lo cortamos
+          fechaLimpia = fechaLimpia.split('\n')[0]; 
+          
+          setEntregaTexto(fechaLimpia);
+          return; // Ya la encontramos, frenamos la búsqueda
+        }
+      }
+    };
+
+    // Le decimos a React que escanee la página cada 1 segundo 
+    // (porque el cliente puede tardar en escribir el Código Postal)
+    const intervalo = setInterval(buscarFechaAndreani, 1000);
+
+    return () => clearInterval(intervalo);
+  }, []);
 
   return (
     <div className="shipping-widget-container">
@@ -51,7 +78,7 @@ const ShippingWidget = () => {
         <div className="shipping-connector"></div>
         
         <div className="shipping-step">
-          <svg className="shipping-icon" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" strokeWidth="1.5">
+          <svg className="shipping-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <path d="M16 10a4 4 0 0 1-8 0"></path>
@@ -62,7 +89,7 @@ const ShippingWidget = () => {
         </div>
 
         <div className="shipping-step">
-          <svg className="shipping-icon" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" strokeWidth="1.5">
+          <svg className="shipping-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <rect x="1" y="3" width="15" height="13"></rect>
             <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
             <circle cx="5.5" cy="18.5" r="2.5"></circle>
@@ -73,12 +100,12 @@ const ShippingWidget = () => {
         </div>
 
         <div className="shipping-step">
-          <svg className="shipping-icon" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" strokeWidth="1.5">
+          <svg className="shipping-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
           <span className="shipping-title">Entrega</span>
-          <span className="shipping-date">{dates.entregaText}</span>
+          <span className="shipping-date">{entregaTexto}</span>
         </div>
       </div>
     </div>
