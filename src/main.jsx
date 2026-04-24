@@ -1,31 +1,41 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import BenefitsList from './BenefitsList';
+import ShippingWidget from './ShippingWidget'; // <-- Importamos el nuevo
 
 const targetSelector = '.price-container'; 
-console.log("🚀 [Widget] Iniciando script. Buscando anclaje:", targetSelector);
 
-const initWidget = () => {
+// Creamos un componente envoltorio que tenga los dos
+const AppWidgets = () => {
+  return (
+    <>
+      <BenefitsList />
+      <ShippingWidget />
+    </>
+  );
+};
+
+const inyectarWidget = () => {
   const targetElement = document.querySelector(targetSelector);
-  console.log("📍 [Widget] Elemento encontrado en el DOM:", targetElement);
-
+  
   if (targetElement && !document.getElementById('widget-beneficios-root')) {
-    console.log("✅ [Widget] Inyectando componente React...");
-    
     const widgetRoot = document.createElement('div');
     widgetRoot.id = 'widget-beneficios-root';
-    
     targetElement.insertAdjacentElement('afterend', widgetRoot);
     
     const root = createRoot(widgetRoot);
-    root.render(<BenefitsList />);
-  } else {
-    console.warn("⚠️ [Widget] No se inyectó. ¿Existe el anclaje?", !!targetElement, "¿Ya estaba inyectado?", !!document.getElementById('widget-beneficios-root'));
+    root.render(<AppWidgets />); // <-- Dibujamos los dos juntos
+    return true; 
   }
+  return false; 
 };
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initWidget);
-} else {
-  initWidget();
+// ... (El resto del código de inyección y el Observer queda igual que antes) ...
+if (!inyectarWidget()) {
+  const observer = new MutationObserver(() => {
+    if (inyectarWidget()) {
+      observer.disconnect(); 
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 }
