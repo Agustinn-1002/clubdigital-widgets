@@ -85,33 +85,31 @@
 }
 
 /* ========================================================= */
-/* RECORTAR Y ACHICAR LA IMAGEN PRINCIPAL (Solo PC)          */
+/* ENCUADRE PANORÁMICO DE IMAGEN (Sin márgenes laterales)    */
 /* ========================================================= */
 
+/* Dejamos que el contenedor vuelva a ocupar el 100% de su espacio natural */
+.js-swiper-product {
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+
 .js-swiper-product .js-product-slide-link {
+  /* Al poner 75% o 80%, la hacemos más ancha que alta (apaisada). 
+     Esto baja la altura total sin generar espacios en blanco a los costados. */
+  padding-bottom: 80% !important; 
   overflow: hidden !important; 
   border-radius: 8px !important; 
 }
 
 .js-product-slide-img {
+  /* El cover se encarga de rellenar todo el nuevo rectángulo apaisado */
   object-fit: cover !important; 
   width: 100% !important;
   height: 100% !important;
 }
 
-/* Aplicamos el achique solo en pantallas grandes (Monitores y Notebooks) */
-@media (min-width: 992px) {
-  .js-swiper-product {
-    max-width: 75% !important; /* Achica el ancho de la caja de la foto */
-    margin: 0 auto !important; /* La centra para que no quede pegada a la izquierda */
-  }
-  
-  .js-swiper-product .js-product-slide-link {
-    padding-bottom: 80% !important; /* La hace apenitas más rectangular para ganar altura */
-  }
-}
-
-/* En celulares (pantallas chicas) la dejamos cuadrada para aprovechar el ancho */
+/* En celulares la dejamos 100% cuadrada porque la pantalla es vertical */
 @media (max-width: 991px) {
   .js-swiper-product .js-product-slide-link {
     padding-bottom: 100% !important; 
