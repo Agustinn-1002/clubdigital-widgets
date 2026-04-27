@@ -85,17 +85,20 @@
 }
 
 /* ========================================================= */
-/* RECORTAR ALTURA DE LA IMAGEN PRINCIPAL                    */
+/* RECORTAR ALTURA DE LA IMAGEN PRINCIPAL (EFECTO ZOOM/CROP) */
 /* ========================================================= */
 
 .js-swiper-product .js-product-slide-link {
-  /* Tiendanube lo fuerza a 130% (rectángulo alto). 
-     100% lo hace un cuadrado perfecto. 
-     Podés bajarlo a 90% o 85% si querés que ocupe menos alto. */
-  padding-bottom: 100% !important; 
+  /* Bajamos a 85% para que sea más rectangular y ocupe menos alto en la pantalla */
+  padding-bottom: 85% !important; 
+  overflow: hidden !important; /* Esconde lo que recortamos */
+  border-radius: 8px !important; /* Opcional: le da un toque premium a la caja de la foto */
 }
 
-/* Opcional: Para asegurarnos de que la imagen no se deforme al achicar el contenedor */
 .js-product-slide-img {
-  object-fit: contain !important;
+  /* LA MAGIA: 'cover' hace que la imagen llene la caja, 
+     recortando automáticamente el blanco que sobra arriba y abajo */
+  object-fit: cover !important; 
+  width: 100% !important;
+  height: 100% !important;
 }
