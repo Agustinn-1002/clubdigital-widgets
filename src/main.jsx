@@ -2,35 +2,32 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import BenefitsList from './BenefitsList';
 import ShippingWidget from './ShippingWidget';
-import ProductSummary from './ProductSummary'; // <-- Importamos el nuevo
+import ProductSummary from './ProductSummary';
 
-console.log("🚀 [Widgets] Iniciando inyección múltiple...");
-
-// Función para extraer la data oculta de la descripción
-const extraerMetadatos = () => {
+// 1. Función de limpieza pura (solo extrae y limpia el texto una vez)
+const procesarDescripcion = () => {
   const descElement = document.querySelector('[data-store^="product-description"]');
-  if (!descElement) return null;
+  if (!descElement || descElement.dataset.procesado === "true") return null;
 
-  // EXPLICACIÓN DE LA MEJORA:
-  // Buscamos [RESUMEN]: y atrapamos todo lo que NO sea un <div> 
-  // (porque los botones de redes de Tiendanube siempre vienen en un <div>)
-  const regexResumen = /\[RESUMEN\]:\s*([\s\S]*?)(?=<div|<section|$)/i;
+  const regexResumen = /\[RESUMEN\]:\s*([\s\S]*?)(?=\[|<div|<section|$)/i;
   const match = descElement.innerHTML.match(regexResumen);
   
-  let resumen = null;
-  
   if (match && match[1]) {
-    resumen = match[1].trim();
+    const textoExtraido = match[1].trim();
+    // Limpiamos la descripción ANTES de inyectar nada
+    descElement.innerHTML = descElement.innerHTML.replace(regexResumen, '');
+    descElement.innerHTML = descElement.innerHTML.replace(/<p>\s*<\/p>/g, '');
     
-    // Solo borramos el texto que nosotros inyectamos, 
-    // dejando los botones sociales en su lugar original
-    descElement.innerHTML = descElement.innerHTML.replace(/\[RESUMEN\]:[\s\S]*?(?=<div|<section|$)/i, '');
+    // Marcamos como procesado para que el Observer no entre en bucle
+    descElement.dataset.procesado = "true";
+    return textoExtraido;
   }
-
-  return { resumen };
+  
+  descElement.dataset.procesado = "true";
+  return null;
 };
 
-// Inyección 1: Los Beneficios (Debajo del precio)
+// 2. Inyectores individuales
 const inyectarBenefits = () => {
   const target = document.querySelector('.price-container'); 
   if (target && !document.getElementById('widget-beneficios-root')) {
@@ -43,7 +40,6 @@ const inyectarBenefits = () => {
   return false;
 };
 
-// Inyección 2: El Envío (Arriba de la descripción)
 const inyectarShipping = () => {
   const target = document.querySelector('[data-store^="product-description"]');
   if (target && !document.getElementById('widget-shipping-root')) {
@@ -56,41 +52,41 @@ const inyectarShipping = () => {
   return false;
 };
 
-// Inyección 3: El Mini Resumen (Arriba del precio)
-const inyectarResumen = () => {
-  const target = document.querySelector('#compare_price_display');
-  // Extraemos el texto en tiempo real
-  const metadatos = extraerMetadatos();
-  
-  if (target && metadatos && metadatos.resumen && !document.getElementById('widget-resumen-root')) {
+const inyectarResumen = (texto) => {
+  const target = document.querySelector('.price-container');
+  if (target && texto && !document.getElementById('widget-resumen-root')) {
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-resumen-root';
-    
-    // Lo inyectamos ANTES del contenedor del precio
     target.insertAdjacentElement('beforebegin', rootDiv);
-    createRoot(rootDiv).render(<ProductSummary texto={metadatos.resumen} />);
+    createRoot(rootDiv).render(<ProductSummary texto={texto} />);
     return true;
   }
-  return false; // Retorna false si no cargó el DOM o si el producto no tiene la etiqueta [RESUMEN]:
+  return false;
 };
 
-let benefitsOk = inyectarBenefits();
-let shippingOk = inyectarShipping();
-let resumenOk = inyectarResumen();
+// 3. Orquestador principal
+let resumenTexto = null;
+let state = { benefits: false, shipping: false, resumen: false };
 
-if (!benefitsOk || !shippingOk || !resumenOk) {
+const ejecutarInyecciones = () => {
+  // Primero procesamos la descripción si no se hizo
+  if (!resumenTexto) {
+    resumenTexto = procesarDescripcion();
+  }
+
+  if (!state.benefits) state.benefits = inyectarBenefits();
+  if (!state.shipping) state.shipping = inyectarShipping();
+  if (!state.resumen && resumenTexto) state.resumen = inyectarResumen(resumenTexto);
+
+  // Si ya cargamos lo básico, podemos desconectar el observer
+  return state.benefits && state.shipping;
+};
+
+// Ejecución inicial y Observer
+if (!ejecutarInyecciones()) {
   const observer = new MutationObserver(() => {
-    if (!benefitsOk) benefitsOk = inyectarBenefits();
-    if (!shippingOk) shippingOk = inyectarShipping();
-    
-    // El resumen solo lo intentamos inyectar una vez que el DOM está listo, 
-    // pero si no hay etiqueta [RESUMEN], lo dejamos pasar (no bloquea al resto).
-    if (!document.getElementById('widget-resumen-root')) {
-      inyectarResumen(); 
-    }
-    
-    if (benefitsOk && shippingOk) {
-      observer.disconnect(); 
+    if (ejecutarInyecciones()) {
+      observer.disconnect();
     }
   });
   observer.observe(document.body, { childList: true, subtree: true });
