@@ -54,7 +54,7 @@ const inyectarShipping = () => {
 
 // Inyección 3: El Mini Resumen (Arriba del precio)
 const inyectarResumen = () => {
-  const target = document.querySelector('.font-smallest');
+  const target = document.querySelector('#compare_price_display');
   // Extraemos el texto en tiempo real
   const metadatos = extraerMetadatos();
   
