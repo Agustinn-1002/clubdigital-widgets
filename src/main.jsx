@@ -56,11 +56,11 @@ const inyectarShipping = () => {
 };
 
 const inyectarResumen = (texto) => {
-  const target = document.querySelector('.price-container');
+  const target = document.querySelector('#compare_price_display');
   if (target && texto && !document.getElementById('widget-resumen-root')) {
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-resumen-root';
-    target.insertAdjacentElement('beforebegin', rootDiv);
+    target.insertAdjacentElement('afterbegin', rootDiv);
     createRoot(rootDiv).render(<ProductSummary texto={texto} />);
     return true;
   }
