@@ -85,20 +85,35 @@
 }
 
 /* ========================================================= */
-/* RECORTAR ALTURA DE LA IMAGEN PRINCIPAL (EFECTO ZOOM/CROP) */
+/* RECORTAR Y ACHICAR LA IMAGEN PRINCIPAL (Solo PC)          */
 /* ========================================================= */
 
 .js-swiper-product .js-product-slide-link {
-  /* Bajamos a 85% para que sea más rectangular y ocupe menos alto en la pantalla */
-  padding-bottom: 85% !important; 
-  overflow: hidden !important; /* Esconde lo que recortamos */
-  border-radius: 8px !important; /* Opcional: le da un toque premium a la caja de la foto */
+  overflow: hidden !important; 
+  border-radius: 8px !important; 
 }
 
 .js-product-slide-img {
-  /* LA MAGIA: 'cover' hace que la imagen llene la caja, 
-     recortando automáticamente el blanco que sobra arriba y abajo */
   object-fit: cover !important; 
   width: 100% !important;
   height: 100% !important;
+}
+
+/* Aplicamos el achique solo en pantallas grandes (Monitores y Notebooks) */
+@media (min-width: 992px) {
+  .js-swiper-product {
+    max-width: 75% !important; /* Achica el ancho de la caja de la foto */
+    margin: 0 auto !important; /* La centra para que no quede pegada a la izquierda */
+  }
+  
+  .js-swiper-product .js-product-slide-link {
+    padding-bottom: 80% !important; /* La hace apenitas más rectangular para ganar altura */
+  }
+}
+
+/* En celulares (pantallas chicas) la dejamos cuadrada para aprovechar el ancho */
+@media (max-width: 991px) {
+  .js-swiper-product .js-product-slide-link {
+    padding-bottom: 100% !important; 
+  }
 }
