@@ -9,16 +9,19 @@ const procesarDescripcion = () => {
   const descElement = document.querySelector('[data-store^="product-description"]');
   if (!descElement || descElement.dataset.procesado === "true") return null;
 
-  const regexResumen = /\[RESUMEN\]:\s*([\s\S]*?)(?=\[|<div|<section|$)/i;
+  // BUSQUEDA QUIRÚRGICA: Captura todo entre las dos etiquetas
+  const regexResumen = /\[RESUMEN\]:\s*([\s\S]*?)\[\/\]/i;
   const match = descElement.innerHTML.match(regexResumen);
   
   if (match && match[1]) {
     const textoExtraido = match[1].trim();
-    // Limpiamos la descripción ANTES de inyectar nada
+    
+    // Borramos el bloque completo (incluyendo las etiquetas) de la descripción
     descElement.innerHTML = descElement.innerHTML.replace(regexResumen, '');
+    
+    // Limpieza de párrafos vacíos sobrantes
     descElement.innerHTML = descElement.innerHTML.replace(/<p>\s*<\/p>/g, '');
     
-    // Marcamos como procesado para que el Observer no entre en bucle
     descElement.dataset.procesado = "true";
     return textoExtraido;
   }
