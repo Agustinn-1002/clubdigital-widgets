@@ -63,7 +63,7 @@ const inyectarResumen = () => {
     rootDiv.id = 'widget-resumen-root';
     
     // Lo inyectamos ANTES del contenedor del precio
-    target.insertAdjacentElement('afterend', rootDiv);
+    target.insertAdjacentElement('beforebegin', rootDiv);
     createRoot(rootDiv).render(<ProductSummary texto={metadatos.resumen} />);
     return true;
   }
