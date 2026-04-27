@@ -1,15 +1,21 @@
 .product-summary-wrapper {
-  background-color: #f8f9fa; /* Gris ultra claro */
-  border-left: 3px solid #9b59b6; /* Violeta Club Digital */
-  padding: 12px 16px;
-  margin-bottom: 15px;
-  border-radius: 0 8px 8px 0;
+  background-color: #f8f9fa; /* Un gris apenas más oscuro para que resalte */
+  border-left: 4px solid #9b59b6; 
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  border-radius: 4px; /* Un poco menos redondeado para que sea más sobrio */
 }
 
 .product-summary-text {
   margin: 0;
-  font-size: 13px;
-  color: #475569;
-  line-height: 1.5;
+  font-size: 13.5px;
+  color: #334155;
+  line-height: 1.6; /* Más espacio entre líneas para que sea fácil de leer */
   font-family: 'Inter', sans-serif;
+}
+
+/* Por si le ponés negritas en el editor de Tiendanube */
+.product-summary-text strong {
+  color: #1e293b;
+  font-weight: 700;
 }

@@ -11,16 +11,22 @@ const extraerMetadatos = () => {
   const descElement = document.querySelector('[data-store^="product-description"]');
   if (!descElement) return null;
 
-  // Expresión regular para buscar "[RESUMEN]: texto"
-  const regexResumen = /\[RESUMEN\]:\s*(.*?)(<\/?p>|<br>|$)/i;
+  // Nueva lógica: Captura todo después de [RESUMEN]: hasta el final 
+  // o hasta que encuentre otro corchete de apertura '[' (por si sumamos más widgets)
+  const regexResumen = /\[RESUMEN\]:\s*([\s\S]*?)(?=\[|$)/i;
   const match = descElement.innerHTML.match(regexResumen);
   
   let resumen = null;
   
   if (match && match[1]) {
     resumen = match[1].trim();
-    // Borramos la etiqueta de la descripción para que el cliente no vea el "código"
+    
+    // Limpiamos la descripción original. 
+    // Usamos una versión más simple para no dejar etiquetas huérfanas
     descElement.innerHTML = descElement.innerHTML.replace(regexResumen, '');
+    
+    // Limpieza extra: si quedó un "[RESUMEN]:" vacío o un párrafo vacío al final, lo volamos
+    descElement.innerHTML = descElement.innerHTML.replace(/<p>\s*<\/p>/g, '');
   }
 
   return { resumen };

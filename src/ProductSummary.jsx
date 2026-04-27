@@ -6,7 +6,11 @@ const ProductSummary = ({ texto }) => {
 
   return (
     <div className="product-summary-wrapper">
-      <p className="product-summary-text">{texto}</p>
+      {/* Usamos dangerouslySetInnerHTML para que los <br /> y negritas funcionen */}
+      <div 
+        className="product-summary-text"
+        dangerouslySetInnerHTML={{ __html: texto }} 
+      />
     </div>
   );
 };
