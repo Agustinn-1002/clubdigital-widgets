@@ -83,3 +83,19 @@
   font-weight: 600 !important;
   background-color: #1e293b !important; /* Botón oscuro más elegante */
 }
+
+/* ========================================================= */
+/* RECORTAR ALTURA DE LA IMAGEN PRINCIPAL                    */
+/* ========================================================= */
+
+.js-swiper-product .js-product-slide-link {
+  /* Tiendanube lo fuerza a 130% (rectángulo alto). 
+     100% lo hace un cuadrado perfecto. 
+     Podés bajarlo a 90% o 85% si querés que ocupe menos alto. */
+  padding-bottom: 100% !important; 
+}
+
+/* Opcional: Para asegurarnos de que la imagen no se deforme al achicar el contenedor */
+.js-product-slide-img {
+  object-fit: contain !important;
+}
