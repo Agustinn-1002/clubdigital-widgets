@@ -54,7 +54,7 @@ const inyectarShipping = () => {
 
 // Inyección 3: El Mini Resumen (Arriba del precio)
 const inyectarResumen = () => {
-  const target = document.querySelector('.price-container');
+  const target = document.querySelector('.font-smallest');
   // Extraemos el texto en tiempo real
   const metadatos = extraerMetadatos();
   
@@ -63,7 +63,7 @@ const inyectarResumen = () => {
     rootDiv.id = 'widget-resumen-root';
     
     // Lo inyectamos ANTES del contenedor del precio
-    target.insertAdjacentElement('beforebegin', rootDiv);
+    target.insertAdjacentElement('afterend', rootDiv);
     createRoot(rootDiv).render(<ProductSummary texto={metadatos.resumen} />);
     return true;
   }
