@@ -56,11 +56,23 @@ const inyectarShipping = () => {
 };
 
 const inyectarResumen = (texto) => {
-  const target = document.querySelector('#compare_price_display');
-  if (target && texto && !document.getElementById('widget-resumen-root')) {
+  // Ubicamos los dos precios
+  const priceNormal = document.querySelector('.price-container');
+  const priceTachado = document.querySelector('#compare_price_display');
+  
+  if (priceNormal && texto && !document.getElementById('widget-resumen-root')) {
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-resumen-root';
-    target.insertAdjacentElement('afterbegin', rootDiv);
+    
+    // MAGIA ESTRUCTURAL:
+    // Si hay precio tachado, subimos un nivel a su "padre" (el span) y nos ponemos antes
+    if (priceTachado && priceTachado.parentElement) {
+      priceTachado.parentElement.insertAdjacentElement('beforebegin', rootDiv);
+    } else {
+      // Si el producto no está en oferta, apuntamos directo al precio normal
+      priceNormal.insertAdjacentElement('beforebegin', rootDiv);
+    }
+    
     createRoot(rootDiv).render(<ProductSummary texto={texto} />);
     return true;
   }
