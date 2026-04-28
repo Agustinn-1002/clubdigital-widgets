@@ -97,7 +97,7 @@
 .js-swiper-product .js-product-slide-link {
   /* Al poner 75% o 80%, la hacemos más ancha que alta (apaisada). 
      Esto baja la altura total sin generar espacios en blanco a los costados. */
-  padding-bottom: 90% !important; 
+  padding-bottom: 30% !important; 
   overflow: hidden !important; 
   border-radius: 8px !important; 
 }
