@@ -56,23 +56,17 @@ const inyectarShipping = () => {
 };
 
 const inyectarResumen = (texto) => {
-  // Ubicamos los dos precios
-  const priceNormal = document.querySelector('.price-container');
-  const priceTachado = document.querySelector('#compare_price_display');
-  
-  if (priceNormal && texto && !document.getElementById('widget-resumen-root')) {
+  // Cambiamos el "blanco": ahora buscamos el formulario que contiene el botón de compra
+  const formCompra = document.querySelector('.js-product-form') || document.querySelector('[data-store="product-form"]');
+
+  if (formCompra && texto && !document.getElementById('widget-resumen-root')) {
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-resumen-root';
+    rootDiv.style.marginTop = '25px'; // Le damos aire para que no se pegue al botón
     
-    // MAGIA ESTRUCTURAL:
-    // Si hay precio tachado, subimos un nivel a su "padre" (el span) y nos ponemos antes
-    if (priceTachado && priceTachado.parentElement) {
-      priceTachado.parentElement.insertAdjacentElement('beforebegin', rootDiv);
-    } else {
-      // Si el producto no está en oferta, apuntamos directo al precio normal
-      priceNormal.insertAdjacentElement('beforebegin', rootDiv);
-    }
-    
+    // Lo insertamos justo después de que termina el formulario de compra
+    formCompra.insertAdjacentElement('afterend', rootDiv);
+
     createRoot(rootDiv).render(<ProductSummary texto={texto} />);
     return true;
   }
@@ -105,7 +99,10 @@ const ejecutarInyecciones = () => {
 
   if (!state.benefits) state.benefits = inyectarBenefits();
   if (!state.shipping) state.shipping = inyectarShipping();
-  if (!state.resumen && resumenTexto) state.resumen = inyectarResumen(resumenTexto);
+  // Ejecutamos el resumen en su nueva posición
+  if (!state.resumen && resumenTexto) {
+    state.resumen = inyectarResumen(resumenTexto);
+  };
   // Ejecutamos la mudanza a la nueva columna
   if (!state.columnaDerecha) state.columnaDerecha = inyectarColumnaDerecha(resumenTexto);
   
