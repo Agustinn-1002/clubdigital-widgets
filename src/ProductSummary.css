@@ -116,30 +116,3 @@
   }
 }
 
-/* ========================================================= */
-/* PANEL FLOTANTE DE ENVÍOS (Solo PC)                        */
-/* ========================================================= */
-
-@media (min-width: 1250px) {
-  /* Apuntamos al contenedor padre del calculador de envíos nativo */
-  .js-shipping-calculator-container,
-  [data-store="shipping-calculator"] {
-    position: fixed !important;
-    top: 150px !important; /* Distancia desde el techo (ajustá según tu menú) */
-    right: 20px !important; /* Distancia desde la derecha */
-    width: 320px !important; /* Un poco más ancho para que entren los precios bien */
-    z-index: 999 !important;
-    
-    /* Le damos estilo de tarjeta flotante */
-    background-color: #ffffff !important;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 8px !important;
-    padding: 20px !important;
-  }
-
-  /* Ocultamos cosas viejas de Tiendanube que ya no sirven acá */
-  .js-shipping-calculator-container hr {
-    display: none !important;
-  }
-}
