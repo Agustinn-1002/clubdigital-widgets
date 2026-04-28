@@ -80,26 +80,30 @@ const inyectarResumen = (texto) => {
 };
 
 const inyectarColumnaDerecha = (textoResumen) => {
-  // Apuntamos al ID que creaste en el FTP
   const columnaDestino = document.getElementById('columna-derecha-clubdigital');
-  const widgetEnviosNativo = document.querySelector('.js-shipping-calculator-container');
+  
+  // CAMBIO CLAVE: Buscamos el ID específico del calculador, no la clase general
+  const widgetEnviosNativo = document.querySelector('#shipping-calculator'); 
 
   if (columnaDestino && !document.getElementById('club-digital-widgets-root')) {
-    
-    // 1. Creamos el contenedor para nuestro Resumen React
+    console.log("🚀 Columna encontrada, iniciando mudanza...");
+
+    // 1. Creamos el contenedor para el Resumen
     const rootDiv = document.createElement('div');
     rootDiv.id = 'club-digital-widgets-root';
-    rootDiv.style.marginBottom = '20px'; // Le damos aire para que no se pegue al envío
+    rootDiv.style.marginBottom = '20px';
     columnaDestino.appendChild(rootDiv);
 
-    // 2. Renderizamos el Resumen (si el Cerebro encontró las etiquetas [/])
     if (textoResumen) {
       createRoot(rootDiv).render(<ProductSummary texto={textoResumen} />);
     }
 
-    // 3. MUDANZA EXTREMA: Agarramos el calculador de Tiendanube y lo pasamos acá
+    // 2. Mudamos el envío solo si lo encontramos
     if (widgetEnviosNativo) {
       columnaDestino.appendChild(widgetEnviosNativo);
+      console.log("📦 Envío mudado con éxito.");
+    } else {
+      console.warn("⚠️ No se encontró el calculador de envíos con #shipping-calculator");
     }
 
     return true;
