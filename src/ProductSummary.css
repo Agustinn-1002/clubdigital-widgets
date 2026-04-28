@@ -84,6 +84,25 @@
   background-color: #1e293b !important; /* Botón oscuro más elegante */
 }
 
+/* Apuntamos al contenedor padre de todo el módulo */
+.js-shipping-calculator-container {
+  background-color: #fbf8ff !important; /* Lila ultra pastel (identidad Club Digital) */
+  border: 1px solid #ebdfff !important; 
+  border-radius: 12px !important; 
+  padding: 20px !important;
+}
+
+/* Ocultamos líneas grises de Tiendanube que ensucian el diseño */
+.js-shipping-calculator-container hr {
+  display: none !important;
+}
+
+/* Le damos un poquito más de peso al título de "Entregas para el CP:" */
+.js-shipping-calculator-container .text-primary {
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
 /* ========================================================= */
 /* ENCUADRE PANORÁMICO DE IMAGEN (Sin márgenes laterales)    */
 /* ========================================================= */
