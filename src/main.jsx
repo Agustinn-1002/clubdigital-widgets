@@ -79,36 +79,18 @@ const inyectarResumen = (texto) => {
   return false;
 };
 
-const inyectarColumnaDerecha = (textoResumen) => {
+const inyectarColumnaDerecha = () => {
   const columnaDestino = document.getElementById('columna-derecha-clubdigital');
-  
-  // EL TRUCO: Buscamos el input del código postal para estar 100% seguros
   const inputPostal = document.querySelector('.js-shipping-input');
-  
-  // A partir del input, buscamos su "caja" contenedora visual (que tiene la clase mb-4)
   const widgetEnviosNativo = inputPostal ? inputPostal.closest('div.mb-4') : null;
 
-  if (columnaDestino && !document.getElementById('club-digital-widgets-root')) {
-
-    // 1. Creamos la caja para el resumen
-    const rootDiv = document.createElement('div');
-    rootDiv.id = 'club-digital-widgets-root';
-    rootDiv.style.marginBottom = '20px';
-    columnaDestino.appendChild(rootDiv);
-
-    // 2. Renderizamos el resumen (si existe)
-    if (textoResumen) {
-      createRoot(rootDiv).render(<ProductSummary texto={textoResumen} />);
-    }
-
-    // 3. Mudamos la cajita exacta del envío
-    if (widgetEnviosNativo) {
-      columnaDestino.appendChild(widgetEnviosNativo);
-    }
-
+  if (columnaDestino && widgetEnviosNativo && !columnaDestino.contains(widgetEnviosNativo)) {
+    // Solo mudamos el envío
+    columnaDestino.appendChild(widgetEnviosNativo);
     return true;
   }
-  return false;
+  // Si ya está mudado, devolvemos true para que el orquestador no lo intente de nuevo
+  return columnaDestino && columnaDestino.contains(widgetEnviosNativo);
 };
 
 // 3. Orquestador principal
@@ -123,7 +105,7 @@ const ejecutarInyecciones = () => {
 
   if (!state.benefits) state.benefits = inyectarBenefits();
   if (!state.shipping) state.shipping = inyectarShipping();
-  //if (!state.resumen && resumenTexto) state.resumen = inyectarResumen(resumenTexto);
+  if (!state.resumen && resumenTexto) state.resumen = inyectarResumen(resumenTexto);
   // Ejecutamos la mudanza a la nueva columna
   if (!state.columnaDerecha) state.columnaDerecha = inyectarColumnaDerecha(resumenTexto);
   
