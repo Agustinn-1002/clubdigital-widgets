@@ -82,28 +82,28 @@ const inyectarResumen = (texto) => {
 const inyectarColumnaDerecha = (textoResumen) => {
   const columnaDestino = document.getElementById('columna-derecha-clubdigital');
   
-  // CAMBIO CLAVE: Buscamos el ID específico del calculador, no la clase general
-  const widgetEnviosNativo = document.querySelector('#shipping-calculator'); 
+  // EL TRUCO: Buscamos el input del código postal para estar 100% seguros
+  const inputPostal = document.querySelector('.js-shipping-input');
+  
+  // A partir del input, buscamos su "caja" contenedora visual (que tiene la clase mb-4)
+  const widgetEnviosNativo = inputPostal ? inputPostal.closest('div.mb-4') : null;
 
   if (columnaDestino && !document.getElementById('club-digital-widgets-root')) {
-    console.log("🚀 Columna encontrada, iniciando mudanza...");
 
-    // 1. Creamos el contenedor para el Resumen
+    // 1. Creamos la caja para el resumen
     const rootDiv = document.createElement('div');
     rootDiv.id = 'club-digital-widgets-root';
     rootDiv.style.marginBottom = '20px';
     columnaDestino.appendChild(rootDiv);
 
+    // 2. Renderizamos el resumen (si existe)
     if (textoResumen) {
       createRoot(rootDiv).render(<ProductSummary texto={textoResumen} />);
     }
 
-    // 2. Mudamos el envío solo si lo encontramos
+    // 3. Mudamos la cajita exacta del envío
     if (widgetEnviosNativo) {
       columnaDestino.appendChild(widgetEnviosNativo);
-      console.log("📦 Envío mudado con éxito.");
-    } else {
-      console.warn("⚠️ No se encontró el calculador de envíos con #shipping-calculator");
     }
 
     return true;
