@@ -123,7 +123,7 @@ const ejecutarInyecciones = () => {
 
   if (!state.benefits) state.benefits = inyectarBenefits();
   if (!state.shipping) state.shipping = inyectarShipping();
-  if (!state.resumen && resumenTexto) state.resumen = inyectarResumen(resumenTexto);
+  //if (!state.resumen && resumenTexto) state.resumen = inyectarResumen(resumenTexto);
   // Ejecutamos la mudanza a la nueva columna
   if (!state.columnaDerecha) state.columnaDerecha = inyectarColumnaDerecha(resumenTexto);
   
