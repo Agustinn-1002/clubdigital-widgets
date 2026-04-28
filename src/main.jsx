@@ -65,7 +65,7 @@ const inyectarResumen = (texto) => {
     rootDiv.style.marginTop = '25px'; // Le damos aire para que no se pegue al botón
     
     // Lo insertamos justo después de que termina el formulario de compra
-    formCompra.insertAdjacentElement('afterend', rootDiv);
+    formCompra.insertAdjacentElement('beforebegin', rootDiv);
 
     createRoot(rootDiv).render(<ProductSummary texto={texto} />);
     return true;
