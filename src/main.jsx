@@ -79,6 +79,34 @@ const inyectarResumen = (texto) => {
   return false;
 };
 
+const inyectarColumnaDerecha = (textoResumen) => {
+  // Apuntamos al ID que creaste en el FTP
+  const columnaDestino = document.getElementById('columna-derecha-clubdigital');
+  const widgetEnviosNativo = document.querySelector('.js-shipping-calculator-container');
+
+  if (columnaDestino && !document.getElementById('club-digital-widgets-root')) {
+    
+    // 1. Creamos el contenedor para nuestro Resumen React
+    const rootDiv = document.createElement('div');
+    rootDiv.id = 'club-digital-widgets-root';
+    rootDiv.style.marginBottom = '20px'; // Le damos aire para que no se pegue al envío
+    columnaDestino.appendChild(rootDiv);
+
+    // 2. Renderizamos el Resumen (si el Cerebro encontró las etiquetas [/])
+    if (textoResumen) {
+      createRoot(rootDiv).render(<ProductSummary texto={textoResumen} />);
+    }
+
+    // 3. MUDANZA EXTREMA: Agarramos el calculador de Tiendanube y lo pasamos acá
+    if (widgetEnviosNativo) {
+      columnaDestino.appendChild(widgetEnviosNativo);
+    }
+
+    return true;
+  }
+  return false;
+};
+
 // 3. Orquestador principal
 let resumenTexto = null;
 let state = { benefits: false, shipping: false, resumen: false };
@@ -92,9 +120,12 @@ const ejecutarInyecciones = () => {
   if (!state.benefits) state.benefits = inyectarBenefits();
   if (!state.shipping) state.shipping = inyectarShipping();
   if (!state.resumen && resumenTexto) state.resumen = inyectarResumen(resumenTexto);
+  // Ejecutamos la mudanza a la nueva columna
+  if (!state.columnaDerecha) state.columnaDerecha = inyectarColumnaDerecha(resumenTexto);
+  
 
   // Si ya cargamos lo básico, podemos desconectar el observer
-  return state.benefits && state.shipping;
+  return state.benefits && state.shipping && state.columnaDerecha;
 };
 
 // Ejecución inicial y Observer
