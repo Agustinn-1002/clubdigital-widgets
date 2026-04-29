@@ -9,8 +9,8 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: #f8fafc; /* Fondo gris ultra sutil */
-  border: 1px solid #e2e8f0;
+  background-color: #d1ffdb; /* Fondo gris ultra sutil */
+  border: 1px solid #10B981;
   border-radius: 50px; /* Forma redondeada elegante */
   padding: 15px 30px;
 }
