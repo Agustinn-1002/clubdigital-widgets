@@ -5,6 +5,7 @@
   padding: 16px 20px;
   margin: 15px 0; /* Espaciado con el precio y los botones */
   font-family: inherit; /* Hereda la fuente de tu Tiendanube */
+  box-shadow: 0px 0px 10px 0px #64565644 !important;
 }
 
 .wb-list {
