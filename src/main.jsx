@@ -87,6 +87,19 @@ const inyectarColumnaDerecha = () => {
   return columnaDestino && columnaDestino.contains(widgetEnviosNativo);
 };
 
+const ocultarDescuentosCero = () => {
+  // Buscamos todas las etiquetas de descuento en la pantalla
+  const etiquetas = document.querySelectorAll('.js-offer-label');
+
+  etiquetas.forEach(etiqueta => {
+    // Si el texto de la etiqueta contiene "0%"
+    if (etiqueta.innerText.includes('0%')) {
+      // La ocultamos forzadamente
+      etiqueta.style.setProperty('display', 'none', 'important');
+    }
+  });
+};
+
 // 3. Orquestador principal
 let resumenTexto = null;
 let state = { benefits: false, shipping: false, resumen: false };
@@ -105,6 +118,8 @@ const ejecutarInyecciones = () => {
   };
   // Ejecutamos la mudanza a la nueva columna
   if (!state.columnaDerecha) state.columnaDerecha = inyectarColumnaDerecha(resumenTexto);
+
+  ocultarDescuentosCero();
   
 
   // Si ya cargamos lo básico, podemos desconectar el observer
