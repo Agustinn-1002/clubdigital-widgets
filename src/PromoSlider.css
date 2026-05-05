@@ -4,16 +4,25 @@
 
 .club-digital-bottom-grid {
   display: grid;
-  grid-template-columns: 1fr 350px; 
+  /* El minmax(0, 1fr) es la magia que evita que se rompa el celu */
+  grid-template-columns: minmax(0, 1fr) 350px; 
   gap: 40px;
   align-items: start;
   margin-top: 30px;
+  width: 100%;
+}
+
+/* Le ponemos un freno a las dos columnas para que no desborden */
+.club-digital-desc-col, 
+#club-digital-slider-root {
+  min-width: 0;
+  max-width: 100%;
 }
 
 @media (max-width: 991px) {
   .club-digital-bottom-grid {
-    grid-template-columns: 1fr; 
-    gap: 20px;
+    grid-template-columns: minmax(0, 1fr); 
+    gap: 30px;
   }
 }
 
@@ -23,7 +32,8 @@
 
 .promo-slider-wrapper { 
   width: 100%; 
-  overflow: hidden; /* Oculta todo lo que se sale del borde */
+  max-width: 100%;
+  overflow: hidden; 
 }
 
 .slider-title { 
@@ -40,29 +50,25 @@
 .promo-slider-track {
   display: flex; 
   gap: 15px; 
-  width: max-content; /* Deja que la pista sea larguísima para que entren todas las fotos clonadas */
+  width: max-content; 
   padding-bottom: 10px;
 }
 
-/* El motor de movimiento */
 .continuous-track {
-  /* Se mueve linealmente durante 20 segundos y vuelve a empezar de forma infinita */
-  animation: slideContinuous 20s linear infinite;
+  animation: slideContinuous 10s linear infinite;
 }
 
-/* EL FRENO: Cuando el mouse hace hover sobre el wrapper, pausa la animación de la pista */
 .promo-slider-wrapper:hover .continuous-track {
   animation-play-state: paused;
 }
 
-/* El empalme perfecto (Como triplicamos las fotos, retroceder un 33.33% exacto vuelve a la foto 1) */
 @keyframes slideContinuous {
   0% { transform: translateX(0); }
   100% { transform: translateX(-33.3333%); } 
 }
 
 /* ========================================================= */
-/* 4. ESTILO DE TARJETA VERTICAL (TIPO STORIES)              */
+/* 4. ESTILO DE TARJETA VERTICAL (PC Y CELU)                 */
 /* ========================================================= */
 
 .promo-slide {
@@ -84,4 +90,13 @@
 
 .promo-slide:hover img { 
   transform: scale(1.04); 
+}
+
+/* Achicamos las tarjetas sutilmente en celulares para mejor UX */
+@media (max-width: 768px) {
+  .promo-slide {
+    flex: 0 0 160px; /* Más angostas */
+    height: 280px;   /* Más bajas */
+    border-radius: 12px;
+  }
 }
