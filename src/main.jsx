@@ -5,25 +5,42 @@ import ShippingWidget from './ShippingWidget';
 import ProductSummary from './ProductSummary';
 import PromoSlider from './PromoSlider';
 
+// 1. EL EXTRACTOR MAESTRO (Ahora saca Resumen y Galería)
 const procesarDescripcion = () => {
   const descElement = document.querySelector('[data-store^="product-description"]');
-  if (!descElement || descElement.dataset.procesado === "true") return null;
+  if (!descElement || descElement.dataset.procesado === "true") return { resumen: null, galeria: [], procesado: true };
 
+  let textoResumen = null;
+  let urlsGaleria = [];
+
+  // A. Buscar y sacar el [RESUMEN]: ... [/]
   const regexResumen = /\[RESUMEN\]:\s*([\s\S]*?)\[\/\]/i;
-  const match = descElement.innerHTML.match(regexResumen);
-  
-  if (match && match[1]) {
-    const textoExtraido = match[1].trim();
+  const matchResumen = descElement.innerHTML.match(regexResumen);
+  if (matchResumen && matchResumen[1]) {
+    textoResumen = matchResumen[1].trim();
     descElement.innerHTML = descElement.innerHTML.replace(regexResumen, '');
-    descElement.innerHTML = descElement.innerHTML.replace(/<p>\s*<\/p>/g, '');
-    descElement.dataset.procesado = "true";
-    return textoExtraido;
   }
-  
+
+  // B. Buscar y sacar la [GALERIA] ... [/GALERIA]
+  const regexGaleria = /\[GALERIA\]([\s\S]*?)\[\/GALERIA\]/i;
+  const matchGaleria = descElement.innerHTML.match(regexGaleria);
+  if (matchGaleria && matchGaleria[1]) {
+    // Armamos un div falso temporal para extraer las URLs de las fotos que pusiste en Tiendanube
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = matchGaleria[1];
+    const imgs = tempDiv.querySelectorAll('img');
+    urlsGaleria = Array.from(imgs).map(img => img.src);
+    
+    descElement.innerHTML = descElement.innerHTML.replace(regexGaleria, '');
+  }
+
+  descElement.innerHTML = descElement.innerHTML.replace(/<p>\s*<\/p>/g, '');
   descElement.dataset.procesado = "true";
-  return null;
+  
+  return { resumen: textoResumen, galeria: urlsGaleria, procesado: true };
 };
 
+// 2. INYECTORES
 const inyectarBenefits = () => {
   const target = document.querySelector('.price-container'); 
   if (target && !document.getElementById('widget-beneficios-root')) {
@@ -50,7 +67,6 @@ const inyectarShipping = () => {
 
 const inyectarResumen = (texto) => {
   const formCompra = document.querySelector('.js-product-form') || document.querySelector('[data-store="product-form"]');
-
   if (formCompra && texto && !document.getElementById('widget-resumen-root')) {
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-resumen-root';
@@ -77,37 +93,45 @@ const inyectarColumnaDerecha = () => {
 const ocultarDescuentosCero = () => {
   const etiquetas = document.querySelectorAll('.js-offer-label');
   etiquetas.forEach(etiqueta => {
-    if (etiqueta.innerText.includes('0%')) {
-      etiqueta.style.setProperty('display', 'none', 'important');
-    }
+    if (etiqueta.innerText.includes('0%')) etiqueta.style.setProperty('display', 'none', 'important');
   });
 };
 
-const inyectarSlider = () => {
+// El inyector del slider ahora recibe la lista de URLs
+const inyectarSlider = (urls) => {
   const contenedor = document.getElementById('club-digital-slider-root');
   if (contenedor && !contenedor.hasChildNodes()) {
     const root = createRoot(contenedor);
-    root.render(<PromoSlider />);
+    root.render(<PromoSlider images={urls} />);
     return true;
   }
   return contenedor ? contenedor.hasChildNodes() : false;
 };
 
-let resumenTexto = null;
+// 3. ORQUESTADOR PRINCIPAL
+let datosExtraidos = { resumen: null, galeria: [], procesado: false };
 let state = { benefits: false, shipping: false, resumen: false, columnaDerecha: false, slider: false };
 
 const ejecutarInyecciones = () => {
-  if (!resumenTexto) resumenTexto = procesarDescripcion();
+  if (!datosExtraidos.procesado) datosExtraidos = procesarDescripcion();
 
   if (!state.benefits) state.benefits = inyectarBenefits();
   if (!state.shipping) state.shipping = inyectarShipping();
-  if (!state.resumen && resumenTexto) state.resumen = inyectarResumen(resumenTexto);
   if (!state.columnaDerecha) state.columnaDerecha = inyectarColumnaDerecha();
-  if (!state.slider) state.slider = inyectarSlider();
+  
+  // Ejecutamos Resumen si hay, si no lo damos por completado
+  if (!state.resumen) {
+    state.resumen = datosExtraidos.resumen ? inyectarResumen(datosExtraidos.resumen) : true;
+  }
+  
+  // Ejecutamos Slider si hay fotos, si no lo damos por completado
+  if (!state.slider) {
+    state.slider = datosExtraidos.galeria.length > 0 ? inyectarSlider(datosExtraidos.galeria) : true;
+  }
 
   ocultarDescuentosCero();
   
-  return state.benefits && state.shipping && state.columnaDerecha && state.slider;
+  return state.benefits && state.shipping && state.columnaDerecha && state.resumen && state.slider;
 };
 
 if (!ejecutarInyecciones()) {
