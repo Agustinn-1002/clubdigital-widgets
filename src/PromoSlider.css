@@ -1,79 +1,30 @@
-/* ========================================================= */
-/* 1. LAYOUT DE LA GRILLA (PC vs MOBILE)                     */
-/* ========================================================= */
-
 .club-digital-bottom-grid {
   display: grid;
-  /* La descripción ocupa lo que sobra (1fr) y la galería ocupa 350px fijos */
   grid-template-columns: 1fr 350px; 
   gap: 40px;
   align-items: start;
   margin-top: 30px;
 }
 
-/* En celulares se apila todo (descripción arriba, slider abajo) */
 @media (max-width: 991px) {
-  .club-digital-bottom-grid {
-    grid-template-columns: 1fr; 
-    gap: 20px;
-  }
+  .club-digital-bottom-grid { grid-template-columns: 1fr; }
 }
 
-/* ========================================================= */
-/* 2. ESTILOS DEL CARRUSEL DE PRODUCTOS                      */
-/* ========================================================= */
+.promo-slider-wrapper { width: 100%; overflow: hidden; }
+.slider-title { font-size: 16px; font-weight: 600; margin-bottom: 15px; }
 
-.promo-slider-wrapper { 
-  width: 100%; 
-  overflow: hidden; 
-}
-
-.slider-title { 
-  font-size: 16px; 
-  font-weight: 600; 
-  color: #1e293b;
-  margin-bottom: 15px; 
-}
-
-/* Pista de deslizamiento táctil nativa (muy fluida) */
 .promo-slider-track {
-  display: flex; 
-  gap: 15px; 
-  overflow-x: auto;
-  scroll-snap-type: x mandatory; 
-  scrollbar-width: none; 
-  padding-bottom: 10px;
+  display: flex; gap: 15px; overflow-x: auto;
+  scroll-snap-type: x mandatory; padding-bottom: 10px;
 }
-
-/* Oculta la barra de scroll en navegadores Webkit */
-.promo-slider-track::-webkit-scrollbar { 
-  display: none; 
-}
+.promo-slider-track::-webkit-scrollbar { display: none; }
 
 .promo-slide {
-  /* Le damos 250px de ancho para que la foto se luzca bien */
-  flex: 0 0 250px; 
-  scroll-snap-align: start; 
-  border-radius: 12px;
-  overflow: hidden; 
-  background-color: #ffffff; /* Fondo blanco para homogeneizar */
-  border: 1px solid #e2e8f0; /* Borde súper sutil y elegante */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex: 0 0 250px; scroll-snap-align: start; 
+  background-color: #fff; border: 1px solid #e2e8f0;
+  border-radius: 12px; display: flex; align-items: center;
 }
 
 .promo-slide img { 
-  width: 100%; 
-  height: 250px; /* Altura fija para mantener simetría */
-  display: block; 
-  /* 'contain' es CLAVE para que no se corten las puntas de los productos */
-  object-fit: contain; 
-  padding: 10px; /* Un poco de aire alrededor del producto */
-  transition: transform 0.2s ease;
-}
-
-/* Efecto zoom muy leve al pasar el mouse por la foto */
-.promo-slide:hover img { 
-  transform: scale(1.05); 
+  width: 100%; height: 250px; object-fit: contain; padding: 10px;
 }
