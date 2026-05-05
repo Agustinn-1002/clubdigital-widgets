@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import BenefitsList from './BenefitsList';
 import ShippingWidget from './ShippingWidget';
 import ProductSummary from './ProductSummary';
+import PromoSlider from './PromoSlider'; // <-- 1. Importamos el nuevo componente
 
 // 1. Función de limpieza pura (solo extrae y limpia el texto una vez)
 const procesarDescripcion = () => {
@@ -56,15 +57,13 @@ const inyectarShipping = () => {
 };
 
 const inyectarResumen = (texto) => {
-  // Cambiamos el "blanco": ahora buscamos el formulario que contiene el botón de compra
   const formCompra = document.querySelector('.js-product-form') || document.querySelector('[data-store="product-form"]');
 
   if (formCompra && texto && !document.getElementById('widget-resumen-root')) {
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-resumen-root';
-    rootDiv.style.marginTop = '25px'; // Le damos aire para que no se pegue al botón
+    rootDiv.style.marginTop = '25px'; 
     
-    // Lo insertamos justo después de que termina el formulario de compra
     formCompra.insertAdjacentElement('beforebegin', rootDiv);
 
     createRoot(rootDiv).render(<ProductSummary texto={texto} />);
@@ -79,51 +78,57 @@ const inyectarColumnaDerecha = () => {
   const widgetEnviosNativo = inputPostal ? inputPostal.closest('div.mb-4') : null;
 
   if (columnaDestino && widgetEnviosNativo && !columnaDestino.contains(widgetEnviosNativo)) {
-    // Solo mudamos el envío
     columnaDestino.appendChild(widgetEnviosNativo);
     return true;
   }
-  // Si ya está mudado, devolvemos true para que el orquestador no lo intente de nuevo
   return columnaDestino && columnaDestino.contains(widgetEnviosNativo);
 };
 
 const ocultarDescuentosCero = () => {
-  // Buscamos todas las etiquetas de descuento en la pantalla
   const etiquetas = document.querySelectorAll('.js-offer-label');
-
   etiquetas.forEach(etiqueta => {
-    // Si el texto de la etiqueta contiene "0%"
     if (etiqueta.innerText.includes('0%')) {
-      // La ocultamos forzadamente
       etiqueta.style.setProperty('display', 'none', 'important');
     }
   });
 };
 
+// <-- 2. Función inyectora para el Slider de la Galería
+const inyectarSlider = () => {
+  const contenedor = document.getElementById('club-digital-slider-root');
+  
+  if (contenedor && !contenedor.hasChildNodes()) {
+    const root = createRoot(contenedor);
+    root.render(<PromoSlider />);
+    return true;
+  }
+  return contenedor ? contenedor.hasChildNodes() : false;
+};
+
 // 3. Orquestador principal
 let resumenTexto = null;
-let state = { benefits: false, shipping: false, resumen: false };
+// <-- Agregamos slider y columnaDerecha al estado inicial para mayor control
+let state = { benefits: false, shipping: false, resumen: false, columnaDerecha: false, slider: false };
 
 const ejecutarInyecciones = () => {
-  // Primero procesamos la descripción si no se hizo
   if (!resumenTexto) {
     resumenTexto = procesarDescripcion();
   }
 
   if (!state.benefits) state.benefits = inyectarBenefits();
   if (!state.shipping) state.shipping = inyectarShipping();
-  // Ejecutamos el resumen en su nueva posición
   if (!state.resumen && resumenTexto) {
     state.resumen = inyectarResumen(resumenTexto);
-  };
-  // Ejecutamos la mudanza a la nueva columna
-  if (!state.columnaDerecha) state.columnaDerecha = inyectarColumnaDerecha(resumenTexto);
+  }
+  if (!state.columnaDerecha) state.columnaDerecha = inyectarColumnaDerecha();
+  
+  // <-- 3. Ejecutamos la inyección del slider
+  if (!state.slider) state.slider = inyectarSlider();
 
   ocultarDescuentosCero();
   
-
-  // Si ya cargamos lo básico, podemos desconectar el observer
-  return state.benefits && state.shipping && state.columnaDerecha;
+  // Desconectamos el observer cuando todo lo estático cargó
+  return state.benefits && state.shipping && state.columnaDerecha && state.slider;
 };
 
 // Ejecución inicial y Observer
