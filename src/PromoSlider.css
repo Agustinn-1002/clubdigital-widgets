@@ -5,7 +5,7 @@
 .club-digital-bottom-grid {
   display: grid;
   /* El minmax(0, 1fr) es la magia que evita que se rompa el celu */
-  grid-template-columns: minmax(0, 1fr) 350px; 
+  grid-template-columns: minmax(0, 1fr) 500px; 
   gap: 40px;
   align-items: start;
   margin-top: 30px;
