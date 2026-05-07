@@ -90,13 +90,6 @@ const inyectarColumnaDerecha = () => {
   return columnaDestino && columnaDestino.contains(widgetEnviosNativo);
 };
 
-const ocultarDescuentosCero = () => {
-  const etiquetas = document.querySelectorAll('.js-offer-label');
-  etiquetas.forEach(etiqueta => {
-    if (etiqueta.innerText.includes('0%')) etiqueta.style.setProperty('display', 'none', 'important');
-  });
-};
-
 // El inyector del slider ahora recibe la lista de URLs
 const inyectarSlider = (urls) => {
   const contenedor = document.getElementById('club-digital-slider-root');

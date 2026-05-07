@@ -140,13 +140,13 @@
 /* ========================================================= */
 
 .labels .js-offer-label {
-    background-color: #ef4444 !important; /* Rojo vibrante para urgencia/oferta */
-    color: #ffffff !important;           /* Texto blanco impecable */
-    font-weight: 800 !important;         /* Bien negrita */
-    font-size: 12px !important;          /* Tamaño legible */
-    padding: 4px 8px !important;         /* Aire alrededor del texto */
-    border-radius: 6px !important;       /* Bordes modernos */
-    display: inline-block !important;    /* Para que respete el padding */
-    letter-spacing: 0.5px !important;    /* Separación de letras */
-    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important; /* Sombra sutil roja */
+    background-color: #ef4444 !important; 
+    color: #ffffff !important;           
+    font-weight: 800 !important;         
+    font-size: 12px !important;          
+    padding: 4px 8px !important;         
+    border-radius: 6px !important;       
+    letter-spacing: 0.5px !important;    
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3) !important; 
+    /* Eliminamos la línea conflictiva de display para que Tiendanube vuelva a ocultar los 0% */
 }
