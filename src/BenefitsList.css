@@ -29,3 +29,26 @@
   width: 20px;
   height: 20px;
 }
+
+/* ========================================================= */
+/* DESTACAR ITEM "HOT SALE" EN EL MENÚ PRINCIPAL             */
+/* ========================================================= */
+
+a.nav-list-link[href*="hot-sale"] {
+    background-color: #ef4444 !important; /* Fondo rojo vibrante */
+    color: #ffffff !important;            /* Texto blanco puro */
+    font-weight: 800 !important;          /* Letra bien negrita */
+    padding: 6px 14px !important;         /* Espacio interior para armar el botón */
+    border-radius: 20px !important;       /* Bordes bien redondeados */
+    margin-left: 5px !important;          /* Separación del item anterior */
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3) !important; /* Resplandor rojo */
+    transition: all 0.3s ease !important; /* Transición suave */
+    display: inline-block !important;
+}
+
+/* Efecto al pasar el mouse por encima */
+a.nav-list-link[href*="hot-sale"]:hover {
+    transform: translateY(-2px) !important; /* Se levanta sutilmente */
+    background-color: #dc2626 !important;   /* Rojo un tono más oscuro */
+    box-shadow: 0 6px 14px rgba(239, 68, 68, 0.5) !important;
+}
